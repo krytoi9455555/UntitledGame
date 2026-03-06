@@ -1,12 +1,22 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 
-public class GameObject implements Cloneable {
+public class GameObject implements Cloneable, Icon {
     protected final int id;
-    protected float x, y;
+    protected float x;
+    protected float y;
+    protected final int size;
     protected final float speed;
+    protected Color color;
 
+    public GameObject() {
+        id = -1;
+        size = 50;
+        speed = 0;
+        color = Color.BLACK;
+    }
 
     public GameObject(int id, float x, float y, float size, float speed) {
         this.id = id;
@@ -16,7 +26,15 @@ public class GameObject implements Cloneable {
         this.speed = speed;
     }
 
-    public void update() {
+    public GameObject(int id, float x, float y, int size, float speed) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.speed = speed;
+    }
+
+    protected void update() {
         x += (int) (speed);
     }
 
@@ -34,12 +52,13 @@ public class GameObject implements Cloneable {
         }
     }
 
-    public void draw(Graphics g) {
+    protected void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.fill(new Rectangle2D.Float()); // float coords
-//        g.fillRect((int) x, (int) y, size, size); // int coords
+        g2d.setColor(color);
+        g2d.fill(new Rectangle2D.Float(x, y, size, size)); // float coords
+
     }
 
     public float getX() { return x; }
@@ -68,5 +87,22 @@ public class GameObject implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    @Override
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+        this.x = x;
+        this.y = y;
+        draw(g);
+    }
+
+    @Override
+    public int getIconWidth() {
+        return size;
+    }
+
+    @Override
+    public int getIconHeight() {
+        return size;
     }
 }
